@@ -4,17 +4,27 @@ import (
 	"math/rand"
 )
 
-// Generate a 100x100 enviroment using 2d array of int and insert random values between 0 and 1
+func GenerateEnviroment() [][]int {
 
-func GenerateEnviroment(size int) [][] int{
+	if NUMBER_OF_ITEMS > MATRIZ_SIZE*MATRIZ_SIZE {
+		panic("Too many items for this enviroment")
+	}
 
-	enviroment := make([][]int, size)
-	
+	enviroment := make([][]int, MATRIZ_SIZE)
+
 	for i := range enviroment {
-		enviroment[i] = make([]int, size)
-		for j := range enviroment[i] {
-			enviroment[i][j] = rand.Intn(2)
+		enviroment[i] = make([]int, MATRIZ_SIZE)
+	}
+
+	for i := 0; i < NUMBER_OF_ITEMS; i++ {
+		x := rand.Intn(MATRIZ_SIZE)
+		y := rand.Intn(MATRIZ_SIZE)
+		if enviroment[x][y] == 0 {
+			enviroment[x][y] = 1
+		} else {
+			i--
 		}
 	}
+
 	return enviroment
 }

@@ -6,10 +6,7 @@ import (
 	"github.com/victor99z/ant-colony/utils"
 )
 
-
-
-
-func prettyPrint(environment *[][]int){
+func prettyPrint(environment *[][]int) {
 	for i := range *environment {
 		for j := range (*environment)[i] {
 			fmt.Print((*environment)[i][j])
@@ -18,12 +15,11 @@ func prettyPrint(environment *[][]int){
 	}
 }
 
-func main(){
+func main() {
 
 	ants := make([]utils.Ant, utils.NUMBER_OF_ANTS)
 
-	enviroment := utils.GenerateEnviroment(utils.MATRIZ_SIZE)
-
+	enviroment := utils.GenerateEnviroment()
 
 	prettyPrint(&enviroment)
 
