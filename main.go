@@ -2,15 +2,9 @@ package main
 
 import (
 	"fmt"
-	"time"
 
 	"github.com/victor99z/ant-colony/utils"
 )
-
-type Position struct {
-	x int
-	y int
-}
 
 func main() {
 
@@ -22,17 +16,16 @@ func main() {
 		ants[ant].Init()
 	}
 
-	for {
-		fmt.Println("")
-		utils.PrettyPrint(&enviroment)
+	utils.PrettyPrint(&enviroment)
+	fmt.Println("")
+	for i := 0; i < utils.NUMBER_ITERATIONS; i++ {
 
-		for _, v := range ants {
-			v.Move(&enviroment)
+		for i := 0; i < len(ants); i++ {
+			ants[i].Move(&enviroment)
 		}
-
-		time.Sleep(time.Second)
 	}
-
+	utils.PrettyPrint(&enviroment)
+	utils.SaveToFile(&enviroment)
 	// fmt.Println(ants)
 	// fmt.Print(enviroment)
 }

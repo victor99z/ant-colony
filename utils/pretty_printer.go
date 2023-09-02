@@ -3,9 +3,9 @@ package utils
 import "fmt"
 
 var (
-	Info = Teal
-	Warn = Yellow
-	Fata = Red
+	Info  = Teal
+	Warn  = Yellow
+	Fatal = Red
 )
 
 var (
@@ -32,9 +32,12 @@ func PrettyPrint(environment *[][]int) {
 		for j := range (*environment)[i] {
 			if (*environment)[i][j] == 0 {
 				fmt.Print(Info("0"))
+			} else if (*environment)[i][j] == -1 {
+				fmt.Print(Warn("ant"))
 			} else {
-				fmt.Print(Fata("1"))
+				fmt.Print(Fatal("1"))
 			}
+			fmt.Print(";")
 		}
 		fmt.Println()
 	}

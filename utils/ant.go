@@ -1,6 +1,8 @@
 package utils
 
-import "math/rand"
+import (
+	"math/rand"
+)
 
 type Ant struct {
 	hasItem bool
@@ -16,52 +18,110 @@ func (ant *Ant) Init() {
 
 func (ant *Ant) Move(env *[][]int) {
 	// todo
-	if (*env)[ant.posX][ant.posY] == 1 {
-		// Comportamento quando existe alguem na celula
-		// dois estados, com item e sem item
 
-		if ant.hasItem {
-			// so move
-			// ant.Move(env)
-		} else {
-			ant.pick()
-			(*env)[ant.posX][ant.posY] = 0
-		}
+	vizinhos := vizinhos(env, ant.posX, ant.posY)
+	qtdVizinhos := len(vizinhos)
 
+	if ant.hasItem && (*env)[ant.posX][ant.posY] == 0 {
+		ant.drop(&vizinhos, env)
+	} else if ant.hasItem && (*env)[ant.posX][ant.posY] == 1 {
+		ant.posX = vizinhos[rand.Intn(qtdVizinhos)][0]
+		ant.posY = vizinhos[rand.Intn(qtdVizinhos)][1]
+	} else if !ant.hasItem && (*env)[ant.posX][ant.posY] == 0 {
+		ant.posX = vizinhos[rand.Intn(qtdVizinhos)][0]
+		ant.posY = vizinhos[rand.Intn(qtdVizinhos)][1]
 	} else {
-		// Comportamento quando a celula está vazia
-		// dois estados, com item e sem item
-
-		if ant.hasItem {
-			ant.drop()
-			(*env)[ant.posX][ant.posY] = 1
-		} else {
-			// ant.Move(env)
-		}
-
+		ant.pick(&vizinhos, env)
 	}
+
 }
 
-func (ant *Ant) moveEstocastico(env *[][]int) {
+func generateAllDirections() [][]int {
+	directions := [][]int{}
 
-	// (*env)[ant.posX+ANT_RANGE <= 10][ant.posY+ANT_RANGE]
-	// (*env)[ant.posX+ANT_RANGE][ant.posY]
-	// (*env)[ant.posX+ANT_RANGE][ant.posY]
-	// (*env)[ant.posX+ANT_RANGE][ant.posY-ANT_RANGE]
-	// (*env)[ant.posX-ANT_RANGE][ant.posY+ANT_RANGE]
-	// (*env)[ant.posX-ANT_RANGE][ant.posY-ANT_RANGE]
-	// (*env)[ant.posX][ant.posY-ANT_RANGE]
-	// (*env)[ant.posX][ant.posY+ANT_RANGE]
+	for x := ANT_RANGE * -1; x <= ANT_RANGE; x++ {
+		for y := ANT_RANGE * -1; y <= ANT_RANGE; y++ {
+			if x != 0 || y != 0 {
+				directions = append(directions, []int{x, y})
+			}
+		}
+	}
+	return directions
 }
 
-func (ant *Ant) pick() bool {
+func vizinhos(env *[][]int, row, col int) [][]int {
+
+	neighbors := [][]int{}
+	rows, cols := len(*env), len((*env)[0])
+
+	directions := generateAllDirections()
+
+	for _, dir := range directions {
+		r, c := row+dir[0], col+dir[1]
+
+		// Check if the neighbor coordinates are within the matrix borders
+		if r >= 0 && r < rows && c >= 0 && c < cols {
+			neighbors = append(neighbors, []int{r, c})
+		}
+	}
+	return neighbors
+}
+
+func (ant *Ant) pick(v *[][]int, env *[][]int) {
 	// todo
-	ant.hasItem = true
-	return ant.hasItem
+
+	qtdVizinhos := len(*v)
+	numVizinhosComItem := 0
+
+	for _, v := range *v {
+		if (*env)[v[0]][v[1]] == 1 {
+			numVizinhosComItem++
+		}
+	}
+
+	calcProb := (1 - (numVizinhosComItem / qtdVizinhos))
+
+	if calcProb == 1 {
+		(*env)[ant.posX][ant.posY] = 0
+		ant.hasItem = true
+	} else if rand.Int() <= calcProb || calcProb == 0 {
+		(*env)[ant.posX][ant.posY] = 1
+		ant.hasItem = false
+	} else {
+		(*env)[ant.posX][ant.posY] = 0
+		ant.hasItem = true
+	}
+
+	ant.posX = (*v)[rand.Intn(qtdVizinhos)][0]
+	ant.posY = (*v)[rand.Intn(qtdVizinhos)][1]
+
 }
 
-func (ant *Ant) drop() bool {
+func (ant *Ant) drop(v *[][]int, env *[][]int) {
 	// todo
-	ant.hasItem = false
-	return ant.hasItem
+
+	qtdVizinhos := len(*v)
+	numVizinhosComItem := 0
+
+	for _, v := range *v {
+		if (*env)[v[0]][v[1]] == 1 {
+			numVizinhosComItem++
+		}
+	}
+
+	calcProb := (numVizinhosComItem / qtdVizinhos)
+
+	if calcProb == 1 {
+		(*env)[ant.posX][ant.posY] = 1
+		ant.hasItem = false
+	} else if rand.Int() <= calcProb || calcProb == 0 {
+		(*env)[ant.posX][ant.posY] = 0
+		ant.hasItem = true
+	} else {
+		(*env)[ant.posX][ant.posY] = 1
+		ant.hasItem = false
+	}
+
+	ant.posX = (*v)[rand.Intn(qtdVizinhos)][0]
+	ant.posY = (*v)[rand.Intn(qtdVizinhos)][1]
 }
