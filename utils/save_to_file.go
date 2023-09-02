@@ -7,9 +7,9 @@ import (
 	"strconv"
 )
 
-func SaveToFile(environment *[][]int) {
+func SaveToFile(environment *[][]int, filename string) {
 	// Create a new CSV file
-	file, err := os.Create("output.csv")
+	file, err := os.Create(filename)
 	if err != nil {
 		log.Fatal("Error creating file:", err)
 	}

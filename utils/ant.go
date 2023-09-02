@@ -79,12 +79,12 @@ func (ant *Ant) pick(v *[][]int, env *[][]int) {
 		}
 	}
 
-	calcProb := (1 - (numVizinhosComItem / qtdVizinhos))
+	calcProb := (1 - (float32(numVizinhosComItem) / float32(qtdVizinhos))) * 100
 
-	if calcProb == 1 {
+	if calcProb == 100 {
 		(*env)[ant.posX][ant.posY] = 0
 		ant.hasItem = true
-	} else if rand.Int() <= calcProb || calcProb == 0 {
+	} else if rand.Intn(100) <= int(calcProb) || calcProb == 0 {
 		(*env)[ant.posX][ant.posY] = 1
 		ant.hasItem = false
 	} else {
@@ -109,12 +109,13 @@ func (ant *Ant) drop(v *[][]int, env *[][]int) {
 		}
 	}
 
-	calcProb := (numVizinhosComItem / qtdVizinhos)
+	// so retorna 0 ou 1
+	calcProb := (float32(numVizinhosComItem) / float32(qtdVizinhos)) * 100
 
-	if calcProb == 1 {
+	if calcProb == 100 {
 		(*env)[ant.posX][ant.posY] = 1
 		ant.hasItem = false
-	} else if rand.Int() <= calcProb || calcProb == 0 {
+	} else if rand.Intn(100) <= int(calcProb) || calcProb == 0 {
 		(*env)[ant.posX][ant.posY] = 0
 		ant.hasItem = true
 	} else {

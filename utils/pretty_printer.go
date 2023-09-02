@@ -33,7 +33,7 @@ func PrettyPrint(environment *[][]int) {
 			if (*environment)[i][j] == 0 {
 				fmt.Print(Info("0"))
 			} else if (*environment)[i][j] == -1 {
-				fmt.Print(Warn("ant"))
+				fmt.Print(Warn("?"))
 			} else {
 				fmt.Print(Fatal("1"))
 			}

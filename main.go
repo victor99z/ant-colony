@@ -16,16 +16,20 @@ func main() {
 		ants[ant].Init()
 	}
 
-	utils.PrettyPrint(&enviroment)
+	//utils.PrettyPrint(&enviroment)
+	fmt.Println(ants)
 	fmt.Println("")
-	for i := 0; i < utils.NUMBER_ITERATIONS; i++ {
 
+	utils.SaveToFile(&enviroment, "input.csv")
+
+	for i := 0; i < utils.NUMBER_ITERATIONS; i++ {
 		for i := 0; i < len(ants); i++ {
 			ants[i].Move(&enviroment)
 		}
+		//fmt.Println(ants)
 	}
-	utils.PrettyPrint(&enviroment)
-	utils.SaveToFile(&enviroment)
+	//utils.PrettyPrint(&enviroment)
+	utils.SaveToFile(&enviroment, "output.csv")
 	// fmt.Println(ants)
 	// fmt.Print(enviroment)
 }
