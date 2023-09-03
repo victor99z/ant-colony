@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"sync"
 
 	"github.com/victor99z/ant-colony/utils"
 )
@@ -9,6 +10,7 @@ import (
 func main() {
 
 	ants := make([]utils.Ant, utils.NUMBER_OF_ANTS)
+	var wg sync.WaitGroup
 
 	enviroment := utils.GenerateEnviroment()
 
@@ -22,19 +24,20 @@ func main() {
 
 	utils.SaveToFile(&enviroment, "input.csv")
 
-	for i := 0; i < utils.NUMBER_ITERATIONS; i++ {
-		for ant := 0; ant < len(ants); ant++ {
-			ants[ant].Move(&enviroment)
-		}
-		//fmt.Println(ants)
+	for i, v := range ants {
+		wg.Add(1)
+		go v.MoveGo(&enviroment, i, &wg)
 	}
 
+	wg.Wait()
+
 	for i, v := range ants {
-		fmt.Println("Ant ", i, " has item: ", v.HasItem)
+		defer fmt.Println("Ant ", i, " has item: ", v.HasItem)
 	}
 
 	//utils.PrettyPrint(&enviroment)
 	utils.SaveToFile(&enviroment, "output.csv")
 	// fmt.Println(ants)
 	// fmt.Print(enviroment)
+
 }

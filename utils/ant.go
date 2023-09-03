@@ -2,6 +2,7 @@ package utils
 
 import (
 	"math/rand"
+	"sync"
 )
 
 type Ant struct {
@@ -16,7 +17,17 @@ func (ant *Ant) Init() {
 	ant.posY = rand.Intn(MATRIZ_SIZE)
 }
 
-func (ant *Ant) Move(env *[][]int) {
+func (ant *Ant) MoveGo(env *[][]int, idx int, wg *sync.WaitGroup) {
+
+	defer wg.Done()
+
+	for i := 0; i < NUMBER_ITERATIONS; i++ {
+		ant.move(env)
+		//fmt.Println("ant ", idx, ant)
+	}
+}
+
+func (ant *Ant) move(env *[][]int) {
 	// todo
 
 	vizinhos := vizinhos(env, ant.PosX, ant.posY)
