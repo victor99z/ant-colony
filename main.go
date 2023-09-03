@@ -23,11 +23,16 @@ func main() {
 	utils.SaveToFile(&enviroment, "input.csv")
 
 	for i := 0; i < utils.NUMBER_ITERATIONS; i++ {
-		for i := 0; i < len(ants); i++ {
-			ants[i].Move(&enviroment)
+		for ant := 0; ant < len(ants); ant++ {
+			ants[ant].Move(&enviroment)
 		}
 		//fmt.Println(ants)
 	}
+
+	for i, v := range ants {
+		fmt.Println("Ant ", i, " has item: ", v.HasItem)
+	}
+
 	//utils.PrettyPrint(&enviroment)
 	utils.SaveToFile(&enviroment, "output.csv")
 	// fmt.Println(ants)

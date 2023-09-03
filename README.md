@@ -1,5 +1,14 @@
 # Ant Colony
 
+### Instalação e Requisitos
+
+- Makefile
+- golang 1.21
+- python3
+- numpy
+- matplotlib
+
+
 ### Executar
 
 ```bash

@@ -5,30 +5,30 @@ import (
 )
 
 type Ant struct {
-	hasItem bool
-	posX    int
+	HasItem bool
+	PosX    int
 	posY    int
 }
 
 func (ant *Ant) Init() {
-	ant.hasItem = false
-	ant.posX = rand.Intn(MATRIZ_SIZE)
+	ant.HasItem = false
+	ant.PosX = rand.Intn(MATRIZ_SIZE)
 	ant.posY = rand.Intn(MATRIZ_SIZE)
 }
 
 func (ant *Ant) Move(env *[][]int) {
 	// todo
 
-	vizinhos := vizinhos(env, ant.posX, ant.posY)
+	vizinhos := vizinhos(env, ant.PosX, ant.posY)
 	qtdVizinhos := len(vizinhos)
 
-	if ant.hasItem && (*env)[ant.posX][ant.posY] == 0 {
+	if ant.HasItem && (*env)[ant.PosX][ant.posY] == 0 {
 		ant.drop(&vizinhos, env)
-	} else if ant.hasItem && (*env)[ant.posX][ant.posY] == 1 {
-		ant.posX = vizinhos[rand.Intn(qtdVizinhos)][0]
+	} else if ant.HasItem && (*env)[ant.PosX][ant.posY] == 1 {
+		ant.PosX = vizinhos[rand.Intn(qtdVizinhos)][0]
 		ant.posY = vizinhos[rand.Intn(qtdVizinhos)][1]
-	} else if !ant.hasItem && (*env)[ant.posX][ant.posY] == 0 {
-		ant.posX = vizinhos[rand.Intn(qtdVizinhos)][0]
+	} else if !ant.HasItem && (*env)[ant.PosX][ant.posY] == 0 {
+		ant.PosX = vizinhos[rand.Intn(qtdVizinhos)][0]
 		ant.posY = vizinhos[rand.Intn(qtdVizinhos)][1]
 	} else {
 		ant.pick(&vizinhos, env)
@@ -82,23 +82,22 @@ func (ant *Ant) pick(v *[][]int, env *[][]int) {
 	calcProb := (1 - (float32(numVizinhosComItem) / float32(qtdVizinhos))) * 100
 
 	if calcProb == 100 {
-		(*env)[ant.posX][ant.posY] = 0
-		ant.hasItem = true
+		(*env)[ant.PosX][ant.posY] = 0
+		ant.HasItem = true
 	} else if rand.Intn(100) <= int(calcProb) || calcProb == 0 {
-		(*env)[ant.posX][ant.posY] = 1
-		ant.hasItem = false
+		(*env)[ant.PosX][ant.posY] = 1
+		ant.HasItem = false
 	} else {
-		(*env)[ant.posX][ant.posY] = 0
-		ant.hasItem = true
+		(*env)[ant.PosX][ant.posY] = 0
+		ant.HasItem = true
 	}
 
-	ant.posX = (*v)[rand.Intn(qtdVizinhos)][0]
+	ant.PosX = (*v)[rand.Intn(qtdVizinhos)][0]
 	ant.posY = (*v)[rand.Intn(qtdVizinhos)][1]
 
 }
 
 func (ant *Ant) drop(v *[][]int, env *[][]int) {
-	// todo
 
 	qtdVizinhos := len(*v)
 	numVizinhosComItem := 0
@@ -109,20 +108,19 @@ func (ant *Ant) drop(v *[][]int, env *[][]int) {
 		}
 	}
 
-	// so retorna 0 ou 1
 	calcProb := (float32(numVizinhosComItem) / float32(qtdVizinhos)) * 100
 
 	if calcProb == 100 {
-		(*env)[ant.posX][ant.posY] = 1
-		ant.hasItem = false
+		(*env)[ant.PosX][ant.posY] = 1
+		ant.HasItem = false
 	} else if rand.Intn(100) <= int(calcProb) || calcProb == 0 {
-		(*env)[ant.posX][ant.posY] = 0
-		ant.hasItem = true
+		(*env)[ant.PosX][ant.posY] = 0
+		ant.HasItem = true
 	} else {
-		(*env)[ant.posX][ant.posY] = 1
-		ant.hasItem = false
+		(*env)[ant.PosX][ant.posY] = 1
+		ant.HasItem = false
 	}
 
-	ant.posX = (*v)[rand.Intn(qtdVizinhos)][0]
+	ant.PosX = (*v)[rand.Intn(qtdVizinhos)][0]
 	ant.posY = (*v)[rand.Intn(qtdVizinhos)][1]
 }
