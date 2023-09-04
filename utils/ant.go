@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"fmt"
 	"math/rand"
 	"sync"
 )
@@ -21,7 +20,7 @@ func MoveAnt(ant *Ant, env *Enviroment, idx int, wg *sync.WaitGroup) {
 
 	defer wg.Done()
 
-	fmt.Println(ant)
+	// fmt.Println(ant)
 	move(ant, env)
 	// time.Sleep(100 * time.Millisecond)
 
@@ -36,14 +35,16 @@ func move(ant *Ant, env *Enviroment) {
 	if ant.HasItem && (*env).GetCellValue(ant.PosX, ant.PosY) == 0 {
 		drop(ant, &vizinhos, env)
 	} else if ant.HasItem && (*env).GetCellValue(ant.PosX, ant.PosY) == 1 {
-
-		ant.PosX = rand.Int() % 4
-		ant.PosY = vizinhos[rand.Intn(qtdVizinhos)][1]
+		fodase := rand.Intn(qtdVizinhos)
+		ant.PosX = vizinhos[fodase][0]
+		ant.PosY = vizinhos[fodase][1]
 
 	} else if !ant.HasItem && (*env).GetCellValue(ant.PosX, ant.PosY) == 0 {
 
-		ant.PosX = vizinhos[rand.Intn(qtdVizinhos)][0]
-		ant.PosY = vizinhos[rand.Intn(qtdVizinhos)][1]
+		fodase := rand.Intn(qtdVizinhos)
+
+		ant.PosX = vizinhos[fodase][0]
+		ant.PosY = vizinhos[fodase][1]
 
 	} else {
 		pick(ant, &vizinhos, env)

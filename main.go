@@ -32,9 +32,9 @@ func main() {
 	for i := 0; i < utils.NUMBER_ITERATIONS; i++ {
 		var wg sync.WaitGroup
 
-		for i, v := range ants {
+		for i := 0; i < utils.ANT_RANGE; i++ {
 			wg.Add(1)
-			go utils.MoveAnt(&v, &enviroment, i, &wg)
+			utils.MoveAnt(&ants[i], &enviroment, i, &wg)
 		}
 
 		wg.Wait()
