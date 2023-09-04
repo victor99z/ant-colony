@@ -10,7 +10,6 @@ import (
 func main() {
 
 	ants := make([]utils.Ant, utils.NUMBER_OF_ANTS)
-	var wg sync.WaitGroup
 
 	enviroment := utils.Enviroment{}
 	enviroment.Init()
@@ -23,14 +22,23 @@ func main() {
 	// fmt.Println(enviroment.GetAll(), ants)
 	fmt.Println("")
 
-	// utils.SaveToFile(&enviroment, "input.csv")
+	utils.SaveToFile(&enviroment, "input.csv")
 
-	for i, v := range ants {
-		wg.Add(1)
-		go v.MoveGo(&enviroment, i, &wg)
+	// for i, v := range ants {
+	// 	wg.Add(1)
+	// 	go utils.MoveAnt(&v, &enviroment, i, &wg)
+	// }
+
+	for i := 0; i < utils.NUMBER_ITERATIONS; i++ {
+		var wg sync.WaitGroup
+
+		for i, v := range ants {
+			wg.Add(1)
+			go utils.MoveAnt(&v, &enviroment, i, &wg)
+		}
+
+		wg.Wait()
 	}
-
-	wg.Wait()
 
 	for i, v := range ants {
 		defer fmt.Println("Ant ", i, " has item: ", v.HasItem)
