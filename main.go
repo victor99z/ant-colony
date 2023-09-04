@@ -18,6 +18,8 @@ func main() {
 		ants[ant].Init()
 	}
 
+	syncMatriz := make(chan utils.Position, utils.MATRIZ_SIZE)
+
 	//utils.PrettyPrint(&enviroment)
 	fmt.Println(ants)
 	fmt.Println("")
@@ -26,7 +28,7 @@ func main() {
 
 	for i, v := range ants {
 		wg.Add(1)
-		go v.MoveGo(&enviroment, i, &wg)
+		go v.MoveGo(&enviroment, i, &wg, syncMatriz)
 	}
 
 	wg.Wait()
@@ -36,7 +38,8 @@ func main() {
 	}
 
 	//utils.PrettyPrint(&enviroment)
-	utils.SaveToFile(&enviroment, "output.csv")
+	//defer utils.PrettyPrint(&enviroment)
+	defer utils.SaveToFile(&enviroment, "output.csv")
 	// fmt.Println(ants)
 	// fmt.Print(enviroment)
 
