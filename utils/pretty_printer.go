@@ -27,12 +27,12 @@ func Color(colorString string) func(...interface{}) string {
 	return sprint
 }
 
-func PrettyPrint(environment *[][]int) {
-	for i := range *environment {
-		for j := range (*environment)[i] {
-			if (*environment)[i][j] == 0 {
+func PrettyPrint(environment *Enviroment) {
+	for i := range environment.GetAll() {
+		for j := range environment.GetAll()[i] {
+			if environment.GetCellValue(i, j) == 0 {
 				fmt.Print(Info("0"))
-			} else if (*environment)[i][j] == -1 {
+			} else if environment.GetCellValue(i, j) == -1 {
 				fmt.Print(Warn("?"))
 			} else {
 				fmt.Print(Fatal("1"))

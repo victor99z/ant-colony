@@ -7,7 +7,7 @@ import (
 	"strconv"
 )
 
-func SaveToFile(environment *[][]int, filename string) {
+func SaveToFile(environment *Enviroment, filename string) {
 	// Create a new CSV file
 	file, err := os.Create(filename)
 	if err != nil {
@@ -20,7 +20,7 @@ func SaveToFile(environment *[][]int, filename string) {
 	defer writer.Flush()
 
 	// Write the matrix data to the CSV file
-	for _, row := range *environment {
+	for _, row := range environment.GetAll() {
 		// Convert each integer to a string before writing to CSV
 		stringRow := make([]string, len(row))
 		for i, val := range row {

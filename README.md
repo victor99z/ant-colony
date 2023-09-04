@@ -49,7 +49,7 @@ $ go test -bench=.
 
 ### Testes realizados:
 
-``` text
+```text
     MATRIZ_SIZE       = 100
 	NUMBER_OF_ANTS    = 20
 	NUMBER_OF_ITEMS   = 100

@@ -12,23 +12,22 @@ func main() {
 	ants := make([]utils.Ant, utils.NUMBER_OF_ANTS)
 	var wg sync.WaitGroup
 
-	enviroment := utils.GenerateEnviroment()
+	enviroment := utils.Enviroment{}
+	enviroment.Init()
 
 	for ant := range ants {
 		ants[ant].Init()
 	}
 
-	syncMatriz := make(chan utils.Position, utils.MATRIZ_SIZE)
-
-	//utils.PrettyPrint(&enviroment)
-	fmt.Println(ants)
+	// utils.PrettyPrint(&enviroment)
+	// fmt.Println(enviroment.GetAll(), ants)
 	fmt.Println("")
 
-	utils.SaveToFile(&enviroment, "input.csv")
+	// utils.SaveToFile(&enviroment, "input.csv")
 
 	for i, v := range ants {
 		wg.Add(1)
-		go v.MoveGo(&enviroment, i, &wg, syncMatriz)
+		go v.MoveGo(&enviroment, i, &wg)
 	}
 
 	wg.Wait()
@@ -37,8 +36,7 @@ func main() {
 		defer fmt.Println("Ant ", i, " has item: ", v.HasItem)
 	}
 
-	//utils.PrettyPrint(&enviroment)
-	//defer utils.PrettyPrint(&enviroment)
+	// defer utils.PrettyPrint(&enviroment)
 	defer utils.SaveToFile(&enviroment, "output.csv")
 	// fmt.Println(ants)
 	// fmt.Print(enviroment)
