@@ -92,8 +92,10 @@ func (ant *Ant) pick(v *[][]int, env *[][]int) {
 		ant.HasItem = true
 	}
 
-	ant.PosX = (*v)[rand.Intn(qtdVizinhos)][0]
-	ant.posY = (*v)[rand.Intn(qtdVizinhos)][1]
+	randomFactor := rand.Intn(qtdVizinhos)
+
+	ant.PosX = (*v)[randomFactor][0]
+	ant.posY = (*v)[randomFactor][1]
 
 }
 
@@ -121,6 +123,8 @@ func (ant *Ant) drop(v *[][]int, env *[][]int) {
 		ant.HasItem = false
 	}
 
-	ant.PosX = (*v)[rand.Intn(qtdVizinhos)][0]
-	ant.posY = (*v)[rand.Intn(qtdVizinhos)][1]
+	randomFactor := rand.Intn(qtdVizinhos)
+
+	ant.PosX = (*v)[randomFactor][0]
+	ant.posY = (*v)[randomFactor][1]
 }
