@@ -115,6 +115,11 @@ func pick(ant *Ant, v *[][]int, env *Enviroment) {
 	}
 	randomFactor := rand.Intn(qtdVizinhos)
 
+<<<<<<< Updated upstream
+=======
+	randomFactor := rand.Intn(qtdVizinhos)
+
+>>>>>>> Stashed changes
 	ant.PosX = (*v)[randomFactor][0]
 	ant.PosY = (*v)[randomFactor][1]
 
