@@ -52,7 +52,7 @@ func main() {
 
 	defer fmt.Println("Final - Number of items in enviroment: ", CountItemsEnv(&enviroment))
 
-	defer utils.PrettyPrint(&enviroment)
+	//defer utils.PrettyPrint(&enviroment)
 	defer utils.SaveToFile(&enviroment, "output.csv")
 	// fmt.Println(ants)
 	// fmt.Print(enviroment)

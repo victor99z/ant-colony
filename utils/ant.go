@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"fmt"
 	"math/rand"
 	"sync"
 )
@@ -37,10 +36,11 @@ func move(ant *Ant, env *Enviroment) {
 
 	randomFactor := rand.Intn(qtdVizinhos)
 
-	fmt.Println(ant)
-
 	localCellValue := (*env).GetCellValue(ant.PosX, ant.PosY)
 
+	// if localCellValue != 0 && localCellValue != 1 {
+	// 	fmt.Println(localCellValue)
+	// }
 	if ant.HasItem && localCellValue == 0 {
 		drop(ant, &vizinhos, env)
 	} else if ant.HasItem && localCellValue == 1 {
@@ -104,20 +104,18 @@ func pick(ant *Ant, v *[][]int, env *Enviroment) {
 
 	calcProb := (1 - (float32(numVizinhosComItem) / float32(qtdVizinhos))) * 100
 
-	mutex.Lock()
-
 	if calcProb == 100 {
-
+		// env.SetCellValue(ant.PosX, ant.PosY, 0)
 		env.setCellDec(ant.PosX, ant.PosY)
 		ant.HasItem = true
 
 	} else if rand.Intn(100) >= int(calcProb) || calcProb == 0 {
-
+		// env.SetCellValue(ant.PosX, ant.PosY, 1)
 		env.setCellIncre(ant.PosX, ant.PosY)
 		ant.HasItem = false
 
 	} else {
-
+		// env.SetCellValue(ant.PosX, ant.PosY, 0)
 		env.setCellDec(ant.PosX, ant.PosY)
 		ant.HasItem = true
 
@@ -126,8 +124,6 @@ func pick(ant *Ant, v *[][]int, env *Enviroment) {
 
 	ant.PosX = (*v)[randomFactor][0]
 	ant.PosY = (*v)[randomFactor][1]
-
-	mutex.Unlock()
 
 }
 
@@ -144,20 +140,18 @@ func drop(ant *Ant, v *[][]int, env *Enviroment) {
 
 	calcProb := (float32(numVizinhosComItem) / float32(qtdVizinhos))
 
-	mutex.Lock()
-
 	if calcProb == 100 {
-
+		// env.SetCellValue(ant.PosX, ant.PosY, 1)
 		env.setCellIncre(ant.PosX, ant.PosY)
 		ant.HasItem = false
 
 	} else if rand.Intn(100) <= int(calcProb) || calcProb == 0 {
-
+		// env.SetCellValue(ant.PosX, ant.PosY, 0)
 		env.setCellDec(ant.PosX, ant.PosY)
 		ant.HasItem = true
 
 	} else {
-
+		// env.SetCellValue(ant.PosX, ant.PosY, 1)
 		env.setCellIncre(ant.PosX, ant.PosY)
 		ant.HasItem = false
 
@@ -167,7 +161,5 @@ func drop(ant *Ant, v *[][]int, env *Enviroment) {
 
 	ant.PosX = (*v)[randomFactor][0]
 	ant.PosY = (*v)[randomFactor][1]
-
-	mutex.Unlock()
 
 }

@@ -33,8 +33,10 @@ func PrettyPrint(environment *Enviroment) {
 			fodase := environment.GetCellValue(i, j)
 			if fodase == 0 {
 				fmt.Print(Info("0\t"))
-			} else {
+			} else if fodase == 1 {
 				fmt.Print(Fatal(fmt.Sprint(fodase) + "\t"))
+			} else {
+				fmt.Print(Warn(fmt.Sprint(fodase) + "\t"))
 			}
 			fmt.Print(";")
 		}
