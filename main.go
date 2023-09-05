@@ -24,21 +24,13 @@ func main() {
 
 	utils.SaveToFile(&enviroment, "input.csv")
 
-	// for i, v := range ants {
-	// 	wg.Add(1)
-	// 	go utils.MoveAnt(&v, &enviroment, i, &wg)
-	// }
+	var wg sync.WaitGroup
 
-	for i := 0; i < utils.NUMBER_ITERATIONS; i++ {
-		var wg sync.WaitGroup
-
-		for i := 0; i < utils.ANT_RANGE; i++ {
-			wg.Add(1)
-			utils.MoveAnt(&ants[i], &enviroment, i, &wg)
-		}
-
-		wg.Wait()
+	for i := 0; i < utils.NUMBER_OF_ANTS; i++ {
+		wg.Add(1)
+		go utils.MoveAnt(&ants[i], &enviroment, i, &wg)
 	}
+	wg.Wait()
 
 	for i, v := range ants {
 		defer fmt.Println("Ant ", i, " has item: ", v.HasItem)

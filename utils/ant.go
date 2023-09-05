@@ -20,9 +20,9 @@ func MoveAnt(ant *Ant, env *Enviroment, idx int, wg *sync.WaitGroup) {
 
 	defer wg.Done()
 
-	// fmt.Println(ant)
-	move(ant, env)
-	// time.Sleep(100 * time.Millisecond)
+	for i := 0; i < NUMBER_ITERATIONS; i++ {
+		move(ant, env)
+	}
 
 }
 
@@ -32,19 +32,19 @@ func move(ant *Ant, env *Enviroment) {
 	vizinhos := neighbors(env, ant.PosX, ant.PosY)
 	qtdVizinhos := len(vizinhos)
 
+	randomFactor := rand.Intn(qtdVizinhos)
+
 	if ant.HasItem && (*env).GetCellValue(ant.PosX, ant.PosY) == 0 {
 		drop(ant, &vizinhos, env)
 	} else if ant.HasItem && (*env).GetCellValue(ant.PosX, ant.PosY) == 1 {
-		fodase := rand.Intn(qtdVizinhos)
-		ant.PosX = vizinhos[fodase][0]
-		ant.PosY = vizinhos[fodase][1]
+
+		ant.PosX = vizinhos[randomFactor][0]
+		ant.PosY = vizinhos[randomFactor][1]
 
 	} else if !ant.HasItem && (*env).GetCellValue(ant.PosX, ant.PosY) == 0 {
 
-		fodase := rand.Intn(qtdVizinhos)
-
-		ant.PosX = vizinhos[fodase][0]
-		ant.PosY = vizinhos[fodase][1]
+		ant.PosX = vizinhos[randomFactor][0]
+		ant.PosY = vizinhos[randomFactor][1]
 
 	} else {
 		pick(ant, &vizinhos, env)
@@ -102,7 +102,7 @@ func pick(ant *Ant, v *[][]int, env *Enviroment) {
 		(*env).SetCellValue(ant.PosX, ant.PosY, 0)
 		ant.HasItem = true
 
-	} else if rand.Intn(100) <= int(calcProb) || calcProb == 0 {
+	} else if rand.Intn(100) >= int(calcProb) || calcProb == 0 {
 
 		(*env).SetCellValue(ant.PosX, ant.PosY, 1)
 		ant.HasItem = false
@@ -113,9 +113,10 @@ func pick(ant *Ant, v *[][]int, env *Enviroment) {
 		ant.HasItem = true
 
 	}
+	randomFactor := rand.Intn(qtdVizinhos)
 
-	ant.PosX = (*v)[rand.Intn(qtdVizinhos)][0]
-	ant.PosY = (*v)[rand.Intn(qtdVizinhos)][1]
+	ant.PosX = (*v)[randomFactor][0]
+	ant.PosY = (*v)[randomFactor][1]
 
 }
 
@@ -130,7 +131,7 @@ func drop(ant *Ant, v *[][]int, env *Enviroment) {
 		}
 	}
 
-	calcProb := (float32(numVizinhosComItem) / float32(qtdVizinhos)) * 100
+	calcProb := (float32(numVizinhosComItem) / float32(qtdVizinhos))
 
 	if calcProb == 100 {
 
@@ -149,7 +150,9 @@ func drop(ant *Ant, v *[][]int, env *Enviroment) {
 
 	}
 
-	ant.PosX = (*v)[rand.Intn(qtdVizinhos)][0]
-	ant.PosY = (*v)[rand.Intn(qtdVizinhos)][1]
+	randomFactor := rand.Intn(qtdVizinhos)
+
+	ant.PosX = (*v)[randomFactor][0]
+	ant.PosY = (*v)[randomFactor][1]
 
 }
