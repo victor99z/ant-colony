@@ -28,6 +28,20 @@ func (env *Enviroment) SetCellValue(x, y, value int) {
 	env.map_items[x][y] = value
 }
 
+func (env *Enviroment) setCellIncre(x, y int) {
+	env.mu.Lock()
+	defer env.mu.Unlock()
+
+	env.map_items[x][y] = env.map_items[x][y] + 1
+}
+
+func (env *Enviroment) setCellDec(x, y int) {
+	env.mu.Lock()
+	defer env.mu.Unlock()
+
+	env.map_items[x][y] = env.map_items[x][y] - 1
+}
+
 func (env *Enviroment) GetSize() int {
 	return MATRIZ_SIZE
 }

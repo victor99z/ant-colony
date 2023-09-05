@@ -30,12 +30,11 @@ func Color(colorString string) func(...interface{}) string {
 func PrettyPrint(environment *Enviroment) {
 	for i := range environment.GetAll() {
 		for j := range environment.GetAll()[i] {
-			if environment.GetCellValue(i, j) == 0 {
-				fmt.Print(Info("0"))
-			} else if environment.GetCellValue(i, j) == -1 {
-				fmt.Print(Warn("?"))
+			fodase := environment.GetCellValue(i, j)
+			if fodase == 0 {
+				fmt.Print(Info("0\t"))
 			} else {
-				fmt.Print(Fatal("1"))
+				fmt.Print(Fatal(fmt.Sprint(fodase) + "\t"))
 			}
 			fmt.Print(";")
 		}

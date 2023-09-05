@@ -7,12 +7,26 @@ import (
 	"github.com/victor99z/ant-colony/utils"
 )
 
+func CountItemsEnv(env *utils.Enviroment) int {
+	count := 0
+	for i := 0; i < utils.MATRIZ_SIZE; i++ {
+		for j := 0; j < utils.MATRIZ_SIZE; j++ {
+			if env.GetCellValue(i, j) != 0 {
+				count++
+			}
+		}
+	}
+	return count
+}
+
 func main() {
 
 	ants := make([]utils.Ant, utils.NUMBER_OF_ANTS)
 
 	enviroment := utils.Enviroment{}
 	enviroment.Init()
+
+	fmt.Println("Start - Number of items in enviroment: ", CountItemsEnv(&enviroment))
 
 	for ant := range ants {
 		ants[ant].Init()
@@ -36,7 +50,9 @@ func main() {
 		defer fmt.Println("Ant ", i, " has item: ", v.HasItem)
 	}
 
-	// defer utils.PrettyPrint(&enviroment)
+	defer fmt.Println("Final - Number of items in enviroment: ", CountItemsEnv(&enviroment))
+
+	defer utils.PrettyPrint(&enviroment)
 	defer utils.SaveToFile(&enviroment, "output.csv")
 	// fmt.Println(ants)
 	// fmt.Print(enviroment)

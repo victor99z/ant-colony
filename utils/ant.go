@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"fmt"
 	"math/rand"
 	"sync"
 )
@@ -10,6 +11,8 @@ type Ant struct {
 	PosX    int
 	PosY    int
 }
+
+var mutex sync.Mutex
 
 func (ant *Ant) Init() {
 	ant.HasItem = false
@@ -34,19 +37,23 @@ func move(ant *Ant, env *Enviroment) {
 
 	randomFactor := rand.Intn(qtdVizinhos)
 
-	if ant.HasItem && (*env).GetCellValue(ant.PosX, ant.PosY) == 0 {
+	fmt.Println(ant)
+
+	localCellValue := (*env).GetCellValue(ant.PosX, ant.PosY)
+
+	if ant.HasItem && localCellValue == 0 {
 		drop(ant, &vizinhos, env)
-	} else if ant.HasItem && (*env).GetCellValue(ant.PosX, ant.PosY) == 1 {
+	} else if ant.HasItem && localCellValue == 1 {
 
 		ant.PosX = vizinhos[randomFactor][0]
 		ant.PosY = vizinhos[randomFactor][1]
 
-	} else if !ant.HasItem && (*env).GetCellValue(ant.PosX, ant.PosY) == 0 {
+	} else if !ant.HasItem && localCellValue == 0 {
 
 		ant.PosX = vizinhos[randomFactor][0]
 		ant.PosY = vizinhos[randomFactor][1]
 
-	} else {
+	} else if !ant.HasItem && localCellValue == 1 {
 		pick(ant, &vizinhos, env)
 	}
 
@@ -97,31 +104,30 @@ func pick(ant *Ant, v *[][]int, env *Enviroment) {
 
 	calcProb := (1 - (float32(numVizinhosComItem) / float32(qtdVizinhos))) * 100
 
+	mutex.Lock()
+
 	if calcProb == 100 {
 
-		(*env).SetCellValue(ant.PosX, ant.PosY, 0)
+		env.setCellDec(ant.PosX, ant.PosY)
 		ant.HasItem = true
 
 	} else if rand.Intn(100) >= int(calcProb) || calcProb == 0 {
 
-		(*env).SetCellValue(ant.PosX, ant.PosY, 1)
+		env.setCellIncre(ant.PosX, ant.PosY)
 		ant.HasItem = false
 
 	} else {
 
-		(*env).SetCellValue(ant.PosX, ant.PosY, 0)
+		env.setCellDec(ant.PosX, ant.PosY)
 		ant.HasItem = true
 
 	}
 	randomFactor := rand.Intn(qtdVizinhos)
 
-<<<<<<< Updated upstream
-=======
-	randomFactor := rand.Intn(qtdVizinhos)
-
->>>>>>> Stashed changes
 	ant.PosX = (*v)[randomFactor][0]
 	ant.PosY = (*v)[randomFactor][1]
+
+	mutex.Unlock()
 
 }
 
@@ -138,19 +144,21 @@ func drop(ant *Ant, v *[][]int, env *Enviroment) {
 
 	calcProb := (float32(numVizinhosComItem) / float32(qtdVizinhos))
 
+	mutex.Lock()
+
 	if calcProb == 100 {
 
-		env.SetCellValue(ant.PosX, ant.PosY, 1)
+		env.setCellIncre(ant.PosX, ant.PosY)
 		ant.HasItem = false
 
 	} else if rand.Intn(100) <= int(calcProb) || calcProb == 0 {
 
-		env.SetCellValue(ant.PosX, ant.PosY, 0)
+		env.setCellDec(ant.PosX, ant.PosY)
 		ant.HasItem = true
 
 	} else {
 
-		env.SetCellValue(ant.PosX, ant.PosY, 1)
+		env.setCellIncre(ant.PosX, ant.PosY)
 		ant.HasItem = false
 
 	}
@@ -159,5 +167,7 @@ func drop(ant *Ant, v *[][]int, env *Enviroment) {
 
 	ant.PosX = (*v)[randomFactor][0]
 	ant.PosY = (*v)[randomFactor][1]
+
+	mutex.Unlock()
 
 }
