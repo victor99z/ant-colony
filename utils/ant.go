@@ -1,6 +1,8 @@
 package utils
 
 import (
+	"crypto/sha1"
+	"fmt"
 	"math/rand"
 	"sync"
 )
@@ -9,6 +11,7 @@ type Ant struct {
 	HasItem bool
 	PosX    int
 	PosY    int
+	Id      [20]byte
 }
 
 var mutex sync.Mutex
@@ -16,27 +19,24 @@ var mutex sync.Mutex
 func (ant *Ant) Init() {
 
 	ant.HasItem = false
-
-	x := rand.Intn(MATRIZ_SIZE)
-	y := rand.Intn(MATRIZ_SIZE)
-
-	ant.PosX = x
-	ant.PosY = y
+	ant.PosX = rand.Intn(MATRIZ_SIZE)
+	ant.PosY = rand.Intn(MATRIZ_SIZE)
+	ant.Id = sha1.Sum([]byte(fmt.Sprint(ant.PosX + ant.PosY)))
 
 }
 
-func MoveAnt(ant *Ant, env *Enviroment, idx int, wg *sync.WaitGroup) {
+func MoveAnt(ant *Ant, ants *[]Ant, env *Enviroment, idx int, wg *sync.WaitGroup) {
 
 	defer wg.Done()
 
 	for i := 0; i < NUMBER_ITERATIONS; i++ {
-		move(ant, env)
-	}
 
+		move(ant, ants, env, idx)
+
+	}
 }
 
-func move(ant *Ant, env *Enviroment) {
-	// todo
+func move(ant *Ant, ants *[]Ant, env *Enviroment, idx int) {
 
 	vizinhos := neighbors(env, ant.PosX, ant.PosY)
 	qtdVizinhos := len(vizinhos)
@@ -44,15 +44,24 @@ func move(ant *Ant, env *Enviroment) {
 	randomFactor := rand.Intn(qtdVizinhos)
 	vizinhosRandomFactor := vizinhos[randomFactor]
 
-	localCellValue := (*env).GetCellValue(ant.PosX, ant.PosY)
+	// for i := 0; i < len(*ants); i++ {
+	// 	if ant.Id != (*ants)[i].Id && ant.PosX == (*ants)[i].PosX && ant.PosY == (*ants)[i].PosY {
+	// 		// fmt.Print("Ant ", idx, " has collided with ant ", i, "\n")
+
+	// 		ant.PosX = vizinhosRandomFactor[0]
+	// 		ant.PosY = vizinhosRandomFactor[1]
+
+	// 		return
+	// 	}
+	// }
 
 	// if localCellValue != 0 && localCellValue != 1 {
 	// 	fmt.Println(localCellValue)
 	// }
-	if ant.HasItem && localCellValue == 0 {
-		drop(ant, &vizinhos, env)
-	} else if !ant.HasItem && localCellValue == 1 {
-		pick(ant, &vizinhos, env)
+	if ant.HasItem && (*env).GetCellValue(ant.PosX, ant.PosY) == 0 {
+		drop(ant, vizinhos, env)
+	} else if !ant.HasItem && (*env).GetCellValue(ant.PosX, ant.PosY) == 1 {
+		pick(ant, vizinhos, env)
 	}
 
 	ant.PosX = vizinhosRandomFactor[0]
@@ -73,7 +82,7 @@ func generateAllDirections() [][]int {
 	return directions
 }
 
-func neighbors(env *Enviroment, row, col int) [][]int {
+func neighbors(env *Enviroment, x, y int) [][]int {
 
 	neighbors := [][]int{}
 	rows, cols := env.GetSize(), env.GetSizeCol()
@@ -81,9 +90,8 @@ func neighbors(env *Enviroment, row, col int) [][]int {
 	directions := generateAllDirections()
 
 	for _, dir := range directions {
-		r, c := row+dir[0], col+dir[1]
+		r, c := x+dir[0], y+dir[1]
 
-		// Check if the neighbor coordinates are within the matrix borders
 		if r >= 0 && r < rows && c >= 0 && c < cols {
 			neighbors = append(neighbors, []int{r, c})
 		}
@@ -91,14 +99,20 @@ func neighbors(env *Enviroment, row, col int) [][]int {
 	return neighbors
 }
 
-func pick(ant *Ant, v *[][]int, env *Enviroment) {
+func pick(ant *Ant, v [][]int, env *Enviroment) {
 	// todo
 
-	qtdVizinhos := len(*v)
+	qtdVizinhos := len(v)
 	numVizinhosComItem := 0
 
-	for _, v := range *v {
-		if (*env).GetCellValue(v[0], v[1]) == 1 {
+	// for _, v := range *v {
+	// 	if (*env).GetCellValue(v[0], v[1]) == 1 {
+	// 		numVizinhosComItem++
+	// 	}
+	// }
+
+	for i := 0; i < qtdVizinhos; i++ {
+		if (*env).GetCellValue(v[i][0], v[i][1]) == 1 {
 			numVizinhosComItem++
 		}
 	}
@@ -106,38 +120,38 @@ func pick(ant *Ant, v *[][]int, env *Enviroment) {
 	calcProb := (1 - (float32(numVizinhosComItem) / float32(qtdVizinhos))) * 100
 
 	if calcProb == 100 {
-		// env.SetCellValue(ant.PosX, ant.PosY, 0)
+		//env.SetCellValue(ant.PosX, ant.PosY, 0)
 		env.setCellDec(ant.PosX, ant.PosY)
 		ant.HasItem = true
 
 	} else if rand.Intn(100) >= int(calcProb) {
-		// env.SetCellValue(ant.PosX, ant.PosY, 1)
+		//env.SetCellValue(ant.PosX, ant.PosY, 0)
 		env.setCellDec(ant.PosX, ant.PosY)
 		ant.HasItem = true
 	}
 
 }
 
-func drop(ant *Ant, v *[][]int, env *Enviroment) {
+func drop(ant *Ant, v [][]int, env *Enviroment) {
 
-	qtdVizinhos := len(*v)
+	qtdVizinhos := len(v)
 	numVizinhosComItem := 0
 
-	for _, v := range *v {
-		if (*env).GetCellValue(v[0], v[1]) == 1 {
+	for i := 0; i < qtdVizinhos; i++ {
+		if (*env).GetCellValue(v[i][0], v[i][1]) == 1 {
 			numVizinhosComItem++
 		}
 	}
 
-	calcProb := (float32(numVizinhosComItem) / float32(qtdVizinhos))
+	calcProb := (float32(numVizinhosComItem) / float32(qtdVizinhos)) * 100
 
 	if calcProb == 100 {
-		// env.SetCellValue(ant.PosX, ant.PosY, 1)
-		// env.setCellIncre(ant.PosX, ant.PosY)
+		//env.SetCellValue(ant.PosX, ant.PosY, 0)
+		env.setCellIncre(ant.PosX, ant.PosY)
 		ant.HasItem = false
 
 	} else if rand.Intn(100) <= int(calcProb) {
-		// env.SetCellValue(ant.PosX, ant.PosY, 0)
+		//env.SetCellValue(ant.PosX, ant.PosY, 0)
 		env.setCellIncre(ant.PosX, ant.PosY)
 		ant.HasItem = false
 
