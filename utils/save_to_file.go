@@ -32,5 +32,5 @@ func SaveToFile(environment *Enviroment, filename string) {
 		}
 	}
 
-	log.Println("CSV file '%s' has been created successfully.", filename)
+	log.Println("CSV file has been created successfully.", filename)
 }

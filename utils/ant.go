@@ -14,10 +14,17 @@ type Ant struct {
 var mutex sync.Mutex
 
 func (ant *Ant) Init() {
+
 	ant.HasItem = false
-	ant.PosX = rand.Intn(MATRIZ_SIZE)
-	ant.PosY = rand.Intn(MATRIZ_SIZE)
+
+	x := rand.Intn(MATRIZ_SIZE)
+	y := rand.Intn(MATRIZ_SIZE)
+
+	ant.PosX = x
+	ant.PosY = y
+
 }
+
 func MoveAnt(ant *Ant, env *Enviroment, idx int, wg *sync.WaitGroup) {
 
 	defer wg.Done()
@@ -35,6 +42,7 @@ func move(ant *Ant, env *Enviroment) {
 	qtdVizinhos := len(vizinhos)
 
 	randomFactor := rand.Intn(qtdVizinhos)
+	vizinhosRandomFactor := vizinhos[randomFactor]
 
 	localCellValue := (*env).GetCellValue(ant.PosX, ant.PosY)
 
@@ -43,19 +51,12 @@ func move(ant *Ant, env *Enviroment) {
 	// }
 	if ant.HasItem && localCellValue == 0 {
 		drop(ant, &vizinhos, env)
-	} else if ant.HasItem && localCellValue == 1 {
-
-		ant.PosX = vizinhos[randomFactor][0]
-		ant.PosY = vizinhos[randomFactor][1]
-
-	} else if !ant.HasItem && localCellValue == 0 {
-
-		ant.PosX = vizinhos[randomFactor][0]
-		ant.PosY = vizinhos[randomFactor][1]
-
 	} else if !ant.HasItem && localCellValue == 1 {
 		pick(ant, &vizinhos, env)
 	}
+
+	ant.PosX = vizinhosRandomFactor[0]
+	ant.PosY = vizinhosRandomFactor[1]
 
 }
 
@@ -109,21 +110,11 @@ func pick(ant *Ant, v *[][]int, env *Enviroment) {
 		env.setCellDec(ant.PosX, ant.PosY)
 		ant.HasItem = true
 
-	} else if rand.Intn(100) >= int(calcProb) || calcProb == 0 {
+	} else if rand.Intn(100) >= int(calcProb) {
 		// env.SetCellValue(ant.PosX, ant.PosY, 1)
-		env.setCellIncre(ant.PosX, ant.PosY)
-		ant.HasItem = false
-
-	} else {
-		// env.SetCellValue(ant.PosX, ant.PosY, 0)
 		env.setCellDec(ant.PosX, ant.PosY)
 		ant.HasItem = true
-
 	}
-	randomFactor := rand.Intn(qtdVizinhos)
-
-	ant.PosX = (*v)[randomFactor][0]
-	ant.PosY = (*v)[randomFactor][1]
 
 }
 
@@ -142,24 +133,14 @@ func drop(ant *Ant, v *[][]int, env *Enviroment) {
 
 	if calcProb == 100 {
 		// env.SetCellValue(ant.PosX, ant.PosY, 1)
-		env.setCellIncre(ant.PosX, ant.PosY)
+		// env.setCellIncre(ant.PosX, ant.PosY)
 		ant.HasItem = false
 
-	} else if rand.Intn(100) <= int(calcProb) || calcProb == 0 {
+	} else if rand.Intn(100) <= int(calcProb) {
 		// env.SetCellValue(ant.PosX, ant.PosY, 0)
-		env.setCellDec(ant.PosX, ant.PosY)
-		ant.HasItem = true
-
-	} else {
-		// env.SetCellValue(ant.PosX, ant.PosY, 1)
 		env.setCellIncre(ant.PosX, ant.PosY)
 		ant.HasItem = false
 
 	}
-
-	randomFactor := rand.Intn(qtdVizinhos)
-
-	ant.PosX = (*v)[randomFactor][0]
-	ant.PosY = (*v)[randomFactor][1]
 
 }

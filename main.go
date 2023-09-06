@@ -32,7 +32,7 @@ func main() {
 		ants[ant].Init()
 	}
 
-	// utils.PrettyPrint(&enviroment)
+	utils.PrettyPrint(&enviroment)
 	// fmt.Println(enviroment.GetAll(), ants)
 	fmt.Println("")
 
@@ -44,6 +44,7 @@ func main() {
 		wg.Add(1)
 		go utils.MoveAnt(&ants[i], &enviroment, i, &wg)
 	}
+
 	wg.Wait()
 
 	for i, v := range ants {
@@ -52,7 +53,7 @@ func main() {
 
 	defer fmt.Println("Final - Number of items in enviroment: ", CountItemsEnv(&enviroment))
 
-	//defer utils.PrettyPrint(&enviroment)
+	defer utils.PrettyPrint(&enviroment)
 	defer utils.SaveToFile(&enviroment, "output.csv")
 	// fmt.Println(ants)
 	// fmt.Print(enviroment)

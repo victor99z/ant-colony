@@ -1,8 +1,8 @@
 import numpy as np
 from matplotlib import pyplot as plt
 
-DataOutput = open("output.csv")
-DataInput = open("input.csv")
+DataOutput = open("output.csv", encoding="utf8")
+DataInput = open("input.csv", encoding="utf8")
 
 Array2d_input= np.loadtxt(DataInput, delimiter=",")
 Array2d_result = np.loadtxt(DataOutput, delimiter=",")
