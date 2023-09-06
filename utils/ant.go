@@ -79,7 +79,10 @@ func (ant *Ant) pick(v *[][]int, env *[][]int) {
 		}
 	}
 
-	calcProb := (1 - (float32(numVizinhosComItem) / float32(qtdVizinhos))) * 100
+	calcProb := (1 - (float32(numVizinhosComItem) / float32(qtdVizinhos)))
+
+	calcProb *= calcProb
+	calcProb = calcProb * 100
 
 	if calcProb == 100 {
 		(*env)[ant.PosX][ant.posY] = 0
@@ -110,7 +113,10 @@ func (ant *Ant) drop(v *[][]int, env *[][]int) {
 		}
 	}
 
-	calcProb := (float32(numVizinhosComItem) / float32(qtdVizinhos)) * 100
+	calcProb := (float32(numVizinhosComItem) / float32(qtdVizinhos))
+
+	calcProb *= calcProb
+	calcProb = calcProb * 100
 
 	if calcProb == 100 {
 		(*env)[ant.PosX][ant.posY] = 1

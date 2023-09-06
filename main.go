@@ -29,6 +29,14 @@ func main() {
 		//fmt.Println(ants)
 	}
 
+	for ant := 0; ant < len(ants); ant++ {
+		for ants[ant].HasItem {
+			for ant := 0; ant < len(ants); ant++ {
+				ants[ant].Move(&enviroment)
+			}
+		}
+	}
+
 	for i, v := range ants {
 		fmt.Println("Ant ", i, " has item: ", v.HasItem)
 	}
