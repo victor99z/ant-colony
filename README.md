@@ -11,6 +11,8 @@
 
 ### Executar
 
+Se a constante `DEBUG` estiver em `TRUE` o programa ira inicializar a engine de jogos 2d ebiten para exibir o comportamento da formiga ao longo do tempo de iteração estipulado no arquivo /utils/constraints.go
+
 ```bash
 $ go run main.go
 ```
@@ -40,12 +42,12 @@ $ go test -bench=.
 
 ### TODO:
 
-- [ ] Formigas paralelas
-
+- [x] Formigas paralelas
+- [ ] Debug usando alguma engine 2D simples (ebiten)
 ### FIXME:
 
-- [ ] Quando termina a iteração, se a formiga estiver com o item ele sera perdido. 
-- [ ] ...
+- [x] Quando termina a iteração, se a formiga estiver com o item ele sera perdido. 
+- [ ] Inconsistencia encontrada em alguns casos, formigas se sobrescrevendo?
 
 ### Testes realizados:
 
