@@ -79,7 +79,7 @@ func move(ant *Ant, ants *[]Ant, env *Enviroment, idx int) {
 
 	// PrettyPrint(&env.antMap)
 	// fmt.Println("-----------------------")
-	// PrettyPrint(&env.map_items)
+	// PrettyPrint(&env.Map_items)
 	// fmt.Println("%%%%%%%%%%%%%%%%%%%%%%%%%%")
 
 }
@@ -120,16 +120,10 @@ func pick(ant *Ant, v [][]int, env *Enviroment) {
 	qtdVizinhos := len(v)
 	numVizinhosComItem := 0
 
-	// for _, v := range *v {
-	// 	if env.GetCellValue(v[0], v[1]) == 1 {
-	// 		numVizinhosComItem++
-	// 	}
-	// }
-
 	(*env).mu.RLock()
 	for i := 0; i < qtdVizinhos; i++ {
 
-		if (*env).map_items[v[i][0]][v[i][1]] == 1 {
+		if (*env).Map_items[v[i][0]][v[i][1]] == 1 {
 			numVizinhosComItem++
 		}
 	}
@@ -164,12 +158,14 @@ func drop(ant *Ant, v [][]int, env *Enviroment) {
 	(*env).mu.RLock()
 	for i := 0; i < qtdVizinhos; i++ {
 
-		if (*env).map_items[v[i][0]][v[i][1]] == 1 {
+		if (*env).Map_items[v[i][0]][v[i][1]] == 1 {
 			numVizinhosComItem++
 		}
 	}
 	(*env).mu.RUnlock()
 	calcProb := (float32(numVizinhosComItem) / float32(qtdVizinhos))
+
+	calcProb = (calcProb * calcProb)
 
 	//calcProb = (calcProb * calcProb * calcProb) + 0
 	//calcProb = calcProb * 100

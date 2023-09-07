@@ -3,7 +3,9 @@ package main
 import (
 	"fmt"
 	"sync"
+	"time"
 
+	"github.com/victor99z/ant-colony/tools"
 	"github.com/victor99z/ant-colony/utils"
 )
 
@@ -19,9 +21,14 @@ func CountItemsEnv(env *utils.Enviroment) int {
 	return count
 }
 
+func Debug(antMap, envMap *[][]int) {
+	tools.SetupDisplay(antMap, envMap)
+}
+
 func main() {
 
 	ants := make([]utils.Ant, utils.NUMBER_OF_ANTS)
+	var wg sync.WaitGroup
 
 	enviroment := utils.Enviroment{}
 	enviroment.Init()
@@ -36,7 +43,10 @@ func main() {
 
 	utils.SaveToFile(&enviroment, "input.csv")
 
-	var wg sync.WaitGroup
+	if utils.DEBUG {
+		go Debug(&enviroment.Map_ants, &enviroment.Map_items)
+		time.Sleep(time.Second * 5)
+	}
 
 	for i := 0; i < utils.NUMBER_OF_ANTS; i++ {
 		wg.Add(1)
