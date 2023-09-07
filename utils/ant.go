@@ -79,26 +79,47 @@ func (ant *Ant) pick(v *[][]int, env *[][]int) {
 		}
 	}
 
-	calcProb := (1 - (float32(numVizinhosComItem) / float32(qtdVizinhos)))
+	calcProb := float32(1.0 - (float32(numVizinhosComItem) / float32(qtdVizinhos)))
 
-	calcProb *= calcProb
-	calcProb = calcProb * 100
+	calcProb = (calcProb * calcProb)
 
-	if calcProb == 100 {
-		(*env)[ant.PosX][ant.posY] = 0
-		ant.HasItem = true
-	} else if rand.Intn(100) <= int(calcProb) || calcProb == 0 {
-		(*env)[ant.PosX][ant.posY] = 1
-		ant.HasItem = false
-	} else {
-		(*env)[ant.PosX][ant.posY] = 0
-		ant.HasItem = true
+	if calcProb > 0.9999 {
+		//env.SetCellValue(ant.PosX, ant.PosY, 0)
+		// (*env).setCellDec(ant.PosX, ant.PosY)
+		(*env)[ant.PosX][ant.posY] = (*env)[ant.PosX][ant.posY] - 1
+		(*ant).HasItem = true
+
+		// fmt.Println(" pick item")
+	} else if rand.Float32() < calcProb {
+		//env.SetCellValue(ant.PosX, ant.PosY, 0)
+		// (*env).setCellDec(ant.PosX, ant.PosY)
+		(*env)[ant.PosX][ant.posY] = (*env)[ant.PosX][ant.posY] - 1
+		(*ant).HasItem = true
+
+		// fmt.Print(ant.Id[0])
+		// fmt.Println(" pick item")
 	}
 
-	randomFactor := rand.Intn(qtdVizinhos)
+	// calcProb := (1 - (float32(numVizinhosComItem) / float32(qtdVizinhos)))
 
-	ant.PosX = (*v)[randomFactor][0]
-	ant.posY = (*v)[randomFactor][1]
+	// calcProb *= calcProb
+	// calcProb = calcProb * 100
+
+	// if calcProb == 100 {
+	// 	(*env)[ant.PosX][ant.posY] = 0
+	// 	ant.HasItem = true
+	// } else if rand.Intn(100) <= int(calcProb) || calcProb == 0 {
+	// 	(*env)[ant.PosX][ant.posY] = 1
+	// 	ant.HasItem = false
+	// } else {
+	// 	(*env)[ant.PosX][ant.posY] = 0
+	// 	ant.HasItem = true
+	// }
+
+	// randomFactor := rand.Intn(qtdVizinhos)
+
+	// ant.PosX = (*v)[randomFactor][0]
+	// ant.posY = (*v)[randomFactor][1]
 
 }
 
