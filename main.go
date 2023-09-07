@@ -45,6 +45,8 @@ func main() {
 
 	wg.Wait()
 
+	defer utils.SaveToFile(&enviroment, "output.csv")
+
 	for i, v := range ants {
 		defer fmt.Println("Ant ", i, " has item: ", v.HasItem)
 	}
@@ -52,7 +54,7 @@ func main() {
 	defer fmt.Println("Final - Number of items in enviroment: ", CountItemsEnv(&enviroment))
 
 	//defer utils.PrettyPrint(&enviroment.map)
-	defer utils.SaveToFile(&enviroment, "output.csv")
+
 	// fmt.Println(ants)
 	// fmt.Print(enviroment)
 

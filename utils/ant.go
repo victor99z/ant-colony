@@ -61,14 +61,14 @@ func move(ant *Ant, ants *[]Ant, env *Enviroment, idx int) {
 	// 	fmt.Println(localCellValue)
 	// }
 
+	(*env).moveAnt(ant)
+
 	pos_atual := (*env).GetCellValue((*ant).PosX, (*ant).PosY)
 	if (*ant).HasItem && pos_atual == 0 {
 		drop(ant, vizinhos, env)
 	} else if !(*ant).HasItem && pos_atual == 1 {
 		pick(ant, vizinhos, env)
 	}
-
-	(*env).moveAnt(ant)
 
 	/* env.mutex_ant.Lock()
 	env.antMap[ant.PosX][ant.PosY] = 0
@@ -172,7 +172,7 @@ func drop(ant *Ant, v [][]int, env *Enviroment) {
 	(*env).mu.RUnlock()
 	calcProb := (float32(numVizinhosComItem) / float32(qtdVizinhos))
 
-	calcProb = (calcProb * calcProb) + 0
+	calcProb = (calcProb * calcProb * calcProb) + 0
 	calcProb = calcProb * 100
 
 	if calcProb == 100 {
