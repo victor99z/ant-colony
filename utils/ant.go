@@ -116,10 +116,10 @@ func (ant *Ant) pick(v *[][]int, env *[][]int) {
 	// 	ant.HasItem = true
 	// }
 
-	// randomFactor := rand.Intn(qtdVizinhos)
+	randomFactor := rand.Intn(qtdVizinhos)
 
-	// ant.PosX = (*v)[randomFactor][0]
-	// ant.posY = (*v)[randomFactor][1]
+	ant.PosX = (*v)[randomFactor][0]
+	ant.posY = (*v)[randomFactor][1]
 
 }
 
@@ -136,19 +136,38 @@ func (ant *Ant) drop(v *[][]int, env *[][]int) {
 
 	calcProb := (float32(numVizinhosComItem) / float32(qtdVizinhos))
 
-	calcProb *= calcProb
-	calcProb = calcProb * 100
+	//calcProb = (calcProb * calcProb * calcProb) + 0
+	//calcProb = calcProb * 100
 
-	if calcProb == 100 {
-		(*env)[ant.PosX][ant.posY] = 1
-		ant.HasItem = false
-	} else if rand.Intn(100) <= int(calcProb) || calcProb == 0 {
-		(*env)[ant.PosX][ant.posY] = 0
-		ant.HasItem = true
-	} else {
-		(*env)[ant.PosX][ant.posY] = 1
-		ant.HasItem = false
+	if calcProb > 0.9999 {
+		//env.SetCellValue(ant.PosX, ant.PosY, 0)
+		(*env)[ant.PosX][ant.posY] = (*env)[ant.PosX][ant.posY] + 1
+		(*ant).HasItem = false
+
+		// fmt.Println(" dropped item")
+	} else if rand.Float32() < calcProb {
+		//env.SetCellValue(ant.PosX, ant.PosY, 0)
+		(*env)[ant.PosX][ant.posY] = (*env)[ant.PosX][ant.posY] + 1
+		(*ant).HasItem = false
+
+		// fmt.Println(" dropped item")
 	}
+
+	// calcProb := (float32(numVizinhosComItem) / float32(qtdVizinhos))
+
+	// calcProb *= calcProb
+	// calcProb = calcProb * 100
+
+	// if calcProb == 100 {
+	// 	(*env)[ant.PosX][ant.posY] = 1
+	// 	ant.HasItem = false
+	// } else if rand.Intn(100) <= int(calcProb) || calcProb == 0 {
+	// 	(*env)[ant.PosX][ant.posY] = 0
+	// 	ant.HasItem = true
+	// } else {
+	// 	(*env)[ant.PosX][ant.posY] = 1
+	// 	ant.HasItem = false
+	// }
 
 	randomFactor := rand.Intn(qtdVizinhos)
 
