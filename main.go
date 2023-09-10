@@ -63,6 +63,12 @@ func main() {
 
 	defer fmt.Println("Final - Number of items in enviroment: ", CountItemsEnv(&enviroment))
 
+	if utils.DEBUG {
+		defer func() {
+			select {}
+		}()
+	}
+
 	//defer utils.PrettyPrint(&enviroment.map)
 
 	// fmt.Println(ants)

@@ -29,14 +29,13 @@ func Color(colorString string) func(...interface{}) string {
 
 func PrettyPrint(in *[][]int) {
 	for _, i := range *in {
-		for _, j := range i {
-			fodase := j
-			if fodase == 0 {
+		for _, tmp := range i {
+			if tmp == 0 {
 				fmt.Print(Info("0"))
-			} else if fodase == 1 {
-				fmt.Print(Fatal(fmt.Sprint(fodase)))
+			} else if tmp == 1 {
+				fmt.Print(Fatal(fmt.Sprint(tmp)))
 			} else {
-				fmt.Print(Warn(fmt.Sprint(fodase)))
+				fmt.Print(Warn(fmt.Sprint(tmp)))
 			}
 			fmt.Print(";")
 		}
