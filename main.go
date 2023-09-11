@@ -65,7 +65,8 @@ func main() {
 
 	if utils.DEBUG {
 		defer func() {
-			select {}
+			for {
+			}
 		}()
 	}
 

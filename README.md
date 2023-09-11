@@ -11,9 +11,10 @@
 
 ### Executar
 
-Se a constante `DEBUG` estiver em `TRUE` o programa ira inicializar a engine de jogos 2d ebiten para exibir o comportamento da formiga ao longo do tempo de iteração estipulado no arquivo /utils/constraints.go
+Se a constante `DEBUG` estiver em `TRUE` o programa ira inicializar a engine de jogos 2d chamada `ebiten` para exibir o comportamento da formiga ao longo do tempo de iteração estipulado no arquivo /utils/constraints.go
 
 ```bash
+$ go mod tidy
 $ go run main.go
 ```
 
