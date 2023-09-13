@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"fmt"
 	"math/rand"
 	"sync"
 )
@@ -20,8 +19,6 @@ func (env *Enviroment) Init() {
 	for i := range env.Map_ants {
 		env.Map_ants[i] = make([]int, MATRIZ_SIZE)
 	}
-
-	fmt.Println(env.Map_ants)
 
 }
 
