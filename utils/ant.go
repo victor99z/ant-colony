@@ -5,8 +5,16 @@ import (
 	"sync"
 )
 
+type Item struct {
+	pos_x, pos_y float32
+	label        int
+	// Posicao do item na matrix 2d (ambiente)
+	PosX, PosY int
+}
+
 type Ant struct {
 	HasItem bool
+	Item    Item
 	PosX    int
 	PosY    int
 }

@@ -21,16 +21,17 @@ func CountItemsEnv(env *utils.Enviroment) int {
 	return count
 }
 
-func Debug(antMap, envMap *[][]int) {
-	tools.SetupDisplay(antMap, envMap)
-}
-
 func main() {
-    // Inicializa a lista de formigas
+
+	f, err := utils.ReadData("./test_cases/case_4_groups.csv")
+
+	fmt.Println(f, err)
+
+	time.Sleep(time.Minute)
+	// Inicializa a lista de formigas
 	ants := make([]utils.Ant, utils.NUMBER_OF_ANTS)
 	var wg sync.WaitGroup
 
-    // Cria e gera uma matriz 2d com o numero de items estabelecidades de forma aleatoria
 	enviroment := utils.Enviroment{}
 	enviroment.Init()
 	fmt.Println("Start - Number of items in enviroment: ", CountItemsEnv(&enviroment))
@@ -39,8 +40,10 @@ func main() {
 		ants[ant].Init()
 	}
 
+	utils.SaveToFile(&enviroment, "input.csv")
+
 	if utils.DEBUG {
-		go Debug(&enviroment.Map_ants, &enviroment.Map_items)
+		go tools.Debug(&enviroment.Map_ants, &enviroment.Map_items)
 		time.Sleep(time.Second * 5)
 	}
 
@@ -51,14 +54,13 @@ func main() {
 
 	wg.Wait()
 
-
 	for i, v := range ants {
 		defer fmt.Println("Ant ", i, " has item: ", v.HasItem)
 	}
 
 	defer fmt.Println("Final - Number of items in enviroment: ", CountItemsEnv(&enviroment))
 
-    // Loop apenas para uso no debug evitando que a engine feche a janela apos a execução, assim podemos analisar o resultado final
+	// Loop apenas para uso no debug evitando que a engine feche a janela apos a execução, assim podemos analisar o resultado final
 	if utils.DEBUG {
 		defer func() {
 			for {

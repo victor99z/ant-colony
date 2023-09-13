@@ -3,6 +3,7 @@ package tools
 import (
 	"image/color"
 	"log"
+	"os"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/victor99z/ant-colony/utils"
@@ -19,6 +20,11 @@ type Game struct {
 }
 
 func (g *Game) Update() error {
+
+	if ebiten.IsWindowBeingClosed() {
+		os.Exit(3)
+	}
+
 	return nil
 }
 
@@ -90,4 +96,8 @@ func SetupDisplay(antMap, envMap *[][]int) {
 		log.Fatal(err)
 	}
 
+}
+
+func Debug(antMap, envMap *[][]int) {
+	SetupDisplay(antMap, envMap)
 }
