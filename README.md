@@ -49,3 +49,4 @@ $ go test -bench=.
 	ANT_RANGE         = 2
 	NUMBER_ITERATIONS = 100000
 ```
+

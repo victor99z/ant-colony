@@ -10,16 +10,17 @@ type Enviroment struct {
 	Map_items [][]int
 	mutex_ant sync.RWMutex
 	Map_ants  [][]int
+	Items     *[]Data
 }
 
-func (env *Enviroment) Init() {
-	env.Map_items = GenerateEnviroment()
+func (env *Enviroment) Init(ItemList *[]Data) {
+	env.Map_items = GenerateEnviroment(ItemList)
 	env.Map_ants = make([][]int, MATRIZ_SIZE)
 
 	for i := range env.Map_ants {
 		env.Map_ants[i] = make([]int, MATRIZ_SIZE)
 	}
-
+	env.Items = ItemList
 }
 
 func (env *Enviroment) moveAnt(ant *Ant) {
@@ -97,7 +98,7 @@ func (env *Enviroment) GetAll() [][]int {
 	return env.Map_items
 }
 
-func GenerateEnviroment() [][]int {
+func GenerateEnviroment(ItemList *[]Data) [][]int {
 
 	if NUMBER_OF_ITEMS > MATRIZ_SIZE*MATRIZ_SIZE {
 		panic("Too many items for this enviroment")
@@ -109,14 +110,15 @@ func GenerateEnviroment() [][]int {
 		env[i] = make([]int, MATRIZ_SIZE)
 	}
 
-	for i := 0; i < NUMBER_OF_ITEMS; i++ {
+	for i := 0; i < len(*ItemList); i++ {
 		x := rand.Intn(MATRIZ_SIZE)
 		y := rand.Intn(MATRIZ_SIZE)
-		if env[x][y] == 0 {
-			env[x][y] = 1
+		if env[x][y] <= 0 {
+			env[x][y] = i + 1
 		} else {
 			i--
 		}
 	}
+
 	return env
 }

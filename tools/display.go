@@ -3,6 +3,7 @@ package tools
 import (
 	"image/color"
 	"log"
+	"math/rand"
 	"os"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -17,77 +18,73 @@ const (
 type Game struct {
 	Enviroment *[][]int
 	AntMap     *[][]int
+	ItemsMap   []utils.Data
+	Colors     []color.RGBA
 }
 
 func (g *Game) Update() error {
 
 	if ebiten.IsWindowBeingClosed() {
-		os.Exit(3)
+		os.Exit(1)
 	}
 
 	return nil
 }
 
-// func agrupar( env *[][]int,int limitador){
-// 	if limitador > 10 return;
-// 	if (*g.Enviroment)[x][y] == 1
-// 		return 1
-// 	else return 0
+func (g *Game) GenerateColors() {
+	colors := []color.RGBA{}
 
-// 	lista_itens = []
-// 	int valor = agrupar((*g.Enviroment)[x-1][y-1], &lista_itens)
-// 	valor += agrupar((*g.Enviroment)[x-1][y+1])
-// 	valor += agrupar((*g.Enviroment)[x+1][y-1])
-// 	valor += agrupar((*g.Enviroment)[x+1][y+1])
+	initialLabel := 0
 
-// 	if valor > 25
-// 		for item in lista_itens:
-// 			item.cor = sla
-// }
+	for i := 0; i < len(g.ItemsMap); i++ {
+		if (g.ItemsMap)[i].Label > initialLabel {
+			colors = append(colors, color.RGBA{uint8(rand.Intn(255)), uint8(rand.Intn(255)), uint8(rand.Intn(255)), 1})
+			initialLabel = (g.ItemsMap)[i].Label
+		}
+	}
+
+	g.Colors = append(g.Colors, colors...)
+}
 
 func (g *Game) Draw(screen *ebiten.Image) {
-	purpleCol := color.RGBA{193, 62, 130, 0.8 * 100} // Item
-	greyColor := color.RGBA{128, 128, 128, 1}        // background
-	antColor := color.RGBA{0, 0, 0, 1}               // Ant
-	antAndItem := color.RGBA{0, 100, 0, 1}
+	//purpleCol := color.RGBA{193, 62, 130, 0.8 * 100} // Item
+	greyColor := color.RGBA{128, 128, 128, 1} // background
+	antColor := color.RGBA{0, 0, 0, 1}        // Ant
 
-	for x := 0; x < utils.MATRIZ_SIZE; x++ {
-		for y := 0; y < utils.MATRIZ_SIZE; y++ {
-
-			// var size2 float64 = (utils.MATRIZ_SIZE / 2.0)
-			// var lo float64 = -3.1415 + (6.2831 * (size2 + float64(x)) / float64(utils.MATRIZ_SIZE))
-			// var la float64 = -1.5707 + (3.1415 * (size2 + float64(y)) / float64(utils.MATRIZ_SIZE))
-			// var x2 int = int(size2) + int(size2*math.Sin(lo)*math.Cos(la))
-			// var y2 int = int(size2) + int(size2*math.Sin(lo)*math.Sin(la))
-			// var z int = int(size2 * math.Cos(lo))
-
-			// if z > 0 {
-			// 	continue
-			// }
-
-			if (*g.Enviroment)[x][y] == 1 && (*g.AntMap)[x][y] == 1 {
-				screen.Set(x, y, antAndItem)
-			} else if (*g.Enviroment)[x][y] == 1 {
-				screen.Set(x, y, purpleCol)
-			} else if (*g.AntMap)[x][y] == 1 {
-				screen.Set(x, y, antColor)
+	for i := 0; i < utils.MATRIZ_SIZE; i++ {
+		for j := 0; j < utils.MATRIZ_SIZE; j++ {
+			if (*g.Enviroment)[i][j] > 0 {
+				// get item from the list
+				item := (*g.Enviroment)[i][j] - 1
+				// get label from the item
+				label := g.ItemsMap[item].Label - 1
+				// get color that have the same label
+				color := g.Colors[label]
+				screen.Set(i, j, color)
+			} else if (*g.AntMap)[i][j] == 1 {
+				screen.Set(i, j, antColor)
 			} else {
-				screen.Set(x, y, greyColor)
+				screen.Set(i, j, greyColor)
 			}
 		}
 	}
+
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
 	return utils.MATRIZ_SIZE, utils.MATRIZ_SIZE
 }
 
-func SetupDisplay(antMap, envMap *[][]int) {
+func SetupDisplay(antMap, envMap *[][]int, items []utils.Data) {
 
 	game := Game{
 		Enviroment: envMap,
 		AntMap:     antMap,
+		ItemsMap:   items,
 	}
+
+	game.GenerateColors()
+
 	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
 	ebiten.SetWindowSize(SCREEN_WIDTH, SCREEN_HEIGHT)
 	ebiten.SetWindowTitle("2D matrix display")
@@ -98,6 +95,6 @@ func SetupDisplay(antMap, envMap *[][]int) {
 
 }
 
-func Debug(antMap, envMap *[][]int) {
-	SetupDisplay(antMap, envMap)
+func Debug(antMap, envMap *[][]int, items []utils.Data) {
+	SetupDisplay(antMap, envMap, items)
 }
