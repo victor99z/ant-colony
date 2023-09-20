@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"os"
+	"slices"
 	"sync"
 	"time"
 
@@ -26,7 +28,7 @@ func main() {
 		ants[ant].Init()
 	}
 
-	if utils.DEBUG {
+	if slices.Contains(os.Args, "debug") {
 		go tools.Debug(&enviroment.Map_ants, &enviroment.Map_items, items)
 		time.Sleep(time.Second * 3)
 	}
@@ -43,7 +45,7 @@ func main() {
 	// }
 
 	// Loop apenas para uso no debug evitando que a engine feche a janela apos a execução, assim podemos analisar o resultado final
-	if utils.DEBUG {
+	if slices.Contains(os.Args, "debug") {
 		defer func() {
 			select {}
 		}()

@@ -5,7 +5,6 @@ const (
 	NUMBER_OF_ANTS    = 20
 	NUMBER_OF_ITEMS   = 400
 	ANT_RANGE         = 3
-	NUMBER_ITERATIONS = 10000000
-	ALPHA             = 14.14
-	DEBUG             = true
+	NUMBER_ITERATIONS = 1000000000
+	ALPHA             = 15
 )

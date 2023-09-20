@@ -5,7 +5,6 @@ import (
 	"math"
 	"math/rand"
 	"sync"
-	"time"
 )
 
 type Ant struct {
@@ -27,13 +26,11 @@ func MoveAnt(ant *Ant, ants *[]Ant, env *Enviroment, wg *sync.WaitGroup) {
 
 	for i := 0; i < NUMBER_ITERATIONS; i++ {
 		move(ant, ants, env)
-		time.Sleep(time.Microsecond)
 	}
 
 	// Move ant until all items are dropped in the enviroment
 	for ant.HasItem {
 		move(ant, ants, env)
-		time.Sleep(time.Microsecond)
 	}
 
 }
@@ -84,14 +81,21 @@ func neighbors(env *Enviroment, x, y int) [][]int {
 	return neighbors
 }
 
-func calcSimilaridade(v [][]int, env *Enviroment, items *[]Data, x, y int, vizinho_ret *int32) float64 {
+// FIXME: similaridade entre 0-0.499
+// OBjetivo é 0.0 - 0.999
+
+func calcSimilaridade(v [][]int, env *Enviroment, items *[]Data, ant *Ant, vizinho_ret *int32) float64 {
 	var similaridade float64
 	var qtdDadosVizinhos int32
 	var itemAtual Data
-	similaridade = 0.0
 	(*env).mu.RLock()
-	if (*env).Map_items[x][y]-1 > 0 {
-		itemAtual = (*items)[(*env).Map_items[x][y]-1]
+
+	if (*env).Map_items[ant.PosX][ant.PosY] > 0 {
+		itemAtual = (*items)[(*env).Map_items[ant.PosX][ant.PosY]-1]
+	} else if ant.HasItem {
+		itemAtual = (*items)[ant.Item-1]
+	} else {
+		panic("Item atual invalido")
 	}
 
 	for i := 0; i < len(v); i++ {
@@ -100,7 +104,8 @@ func calcSimilaridade(v [][]int, env *Enviroment, items *[]Data, x, y int, vizin
 			qtdDadosVizinhos++
 			itemInfo := (*items)[valueFromCell-1]
 			quad := (math.Sqrt(math.Pow(itemAtual.PosX-itemInfo.PosX, 2) + math.Pow(itemAtual.PosY-itemInfo.PosY, 2)))
-			similaridade += 1 - (quad / ALPHA)
+			dist := 1 - (quad / ALPHA)
+			similaridade += dist
 		}
 	}
 	(*env).mu.RUnlock()
@@ -125,26 +130,23 @@ func calcSimilaridade(v [][]int, env *Enviroment, items *[]Data, x, y int, vizin
 // Logic to pick a item from the enviroment
 func pick(ant *Ant, v [][]int, env *Enviroment) {
 	var vizinho_ret int32 = 0
-	similaridade := calcSimilaridade(v, env, env.Items, ant.PosX, ant.PosY, &vizinho_ret)
-	k1 := 0.01
-	k1floor := k1 / (1.0 + k1)
-	k1ceil := 1 - k1floor
+	similaridade := calcSimilaridade(v, env, env.Items, ant, &vizinho_ret)
+	k1 := 0.3
 
-	p_pick := k1 / (k1 + similaridade)
+	p_pick := math.Pow((k1 / (k1 + similaridade)), 2)
 
-	if p_pick > k1floor && p_pick <= 1.0 {
-		//    0.2  ...   1.0
-		if (k1floor + rand.Float64()*k1ceil) >= p_pick {
-			//pega
-			(*ant).Item = env.GetCellValue(ant.PosX, ant.PosY)
-			(*env).SetCellValue(ant.PosX, ant.PosY, 0)
-			(*ant).HasItem = true
-			fmt.Println("pick ", vizinho_ret, similaridade, p_pick)
-		}
-	} /* else {
-		fmt.Println("Pick inválido ", similaridade, p_pick)
-	} */
-	return
+	if similaridade >= k1 {
+		p_pick = 0.0
+		return
+	}
+
+	if (rand.Float64()) < p_pick {
+		//pega
+		(*ant).Item = env.GetCellValue(ant.PosX, ant.PosY)
+		(*env).SetCellValue(ant.PosX, ant.PosY, 0)
+		(*ant).HasItem = true
+		fmt.Println("pick ", vizinho_ret, similaridade, p_pick)
+	}
 
 }
 
@@ -153,24 +155,28 @@ func pick(ant *Ant, v [][]int, env *Enviroment) {
 func drop(ant *Ant, v [][]int, env *Enviroment) {
 
 	var vizinho_ret int32 = 0
-	similaridade := calcSimilaridade(v, env, env.Items, ant.PosX, ant.PosY, &vizinho_ret)
+	similaridade := calcSimilaridade(v, env, env.Items, ant, &vizinho_ret)
 
-	k2 := 0.01
-	k2ceil := 1.0 / (k2 + 1.0)
+	k2 := 0.15
 
-	p_drop := (similaridade / (k2 + similaridade))
+	p_drop := math.Pow((similaridade / (k2 + similaridade)), 2)
 
-	if p_drop <= k2ceil && p_drop >= 0.0 {
-		//    0.0  ... 0.917
-		if (rand.Float64() * k2ceil) <= p_drop {
-			//dropa
-			(*env).SetCellValue(ant.PosX, ant.PosY, ant.Item)
-			(*ant).HasItem = false
-			(*ant).Item = 0
-			fmt.Println("drop ", vizinho_ret, similaridade, p_drop)
-		}
-	} /* else {
-		fmt.Println("Drop inválido ", similaridade, p_drop)
-	} */
+	if similaridade >= k2 {
+		p_drop = 1.0
+		//fmt.Println("similaridade >= k2 ", similaridade, k2, p_drop)
+		(*env).SetCellValue(ant.PosX, ant.PosY, ant.Item)
+		(*ant).HasItem = false
+		(*ant).Item = 0
+		fmt.Println("drop ", vizinho_ret, similaridade, p_drop)
+		return
+	}
+
+	if (rand.Float64()) < p_drop {
+		//dropa
+		(*env).SetCellValue(ant.PosX, ant.PosY, ant.Item)
+		(*ant).HasItem = false
+		(*ant).Item = 0
+		fmt.Println("drop ", vizinho_ret, similaridade, p_drop)
+	}
 
 }
