@@ -105,7 +105,10 @@ func calcSimilaridade(v [][]int, env *Enviroment, items *[]Data, ant *Ant, vizin
 			itemInfo := (*items)[valueFromCell-1]
 			quad := (math.Sqrt(math.Pow(itemAtual.PosX-itemInfo.PosX, 2) + math.Pow(itemAtual.PosY-itemInfo.PosY, 2)))
 			dist := 1 - (quad / ALPHA)
-			similaridade += dist
+			if dist > 0 {
+				similaridade += dist
+			}
+
 		}
 	}
 	(*env).mu.RUnlock()
@@ -115,15 +118,7 @@ func calcSimilaridade(v [][]int, env *Enviroment, items *[]Data, ant *Ant, vizin
 	}
 	similaridade = similaridade / math.Pow(float64(qtdDadosVizinhos), 2)
 
-	if similaridade < 0.0 {
-		//fmt.Println("Similaridade invalida: ", similaridade)
-		return 0
-	}
-	/* if similaridade > 1.0 {
-		//fmt.Println("Similaridade invalida: ", similaridade)
-		return 1
-	} */
-	return similaridade
+	return math.Max(0.0, similaridade)
 
 }
 
@@ -131,13 +126,12 @@ func calcSimilaridade(v [][]int, env *Enviroment, items *[]Data, ant *Ant, vizin
 func pick(ant *Ant, v [][]int, env *Enviroment) {
 	var vizinho_ret int32 = 0
 	similaridade := calcSimilaridade(v, env, env.Items, ant, &vizinho_ret)
-	k1 := 0.3
+	k1 := 0.2
 
 	p_pick := math.Pow((k1 / (k1 + similaridade)), 2)
 
 	if similaridade >= k1 {
 		p_pick = 0.0
-		return
 	}
 
 	if (rand.Float64()) < p_pick {
@@ -157,18 +151,12 @@ func drop(ant *Ant, v [][]int, env *Enviroment) {
 	var vizinho_ret int32 = 0
 	similaridade := calcSimilaridade(v, env, env.Items, ant, &vizinho_ret)
 
-	k2 := 0.15
+	k2 := 0.2
 
 	p_drop := math.Pow((similaridade / (k2 + similaridade)), 2)
 
 	if similaridade >= k2 {
 		p_drop = 1.0
-		//fmt.Println("similaridade >= k2 ", similaridade, k2, p_drop)
-		(*env).SetCellValue(ant.PosX, ant.PosY, ant.Item)
-		(*ant).HasItem = false
-		(*ant).Item = 0
-		fmt.Println("drop ", vizinho_ret, similaridade, p_drop)
-		return
 	}
 
 	if (rand.Float64()) < p_drop {

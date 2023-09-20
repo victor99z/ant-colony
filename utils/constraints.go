@@ -1,10 +1,10 @@
 package utils
 
 const (
-	MATRIZ_SIZE       = 100
-	NUMBER_OF_ANTS    = 20
+	MATRIZ_SIZE       = 50
+	NUMBER_OF_ANTS    = 1
 	NUMBER_OF_ITEMS   = 400
-	ANT_RANGE         = 3
-	NUMBER_ITERATIONS = 1000000000
+	ANT_RANGE         = 1
+	NUMBER_ITERATIONS = 100000
 	ALPHA             = 15
 )
