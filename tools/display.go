@@ -38,7 +38,7 @@ func (g *Game) GenerateColors() {
 
 	for i := 0; i < len(g.ItemsMap); i++ {
 		if (g.ItemsMap)[i].Label > initialLabel {
-			colors = append(colors, color.RGBA{uint8(rand.Intn(255)), uint8(rand.Intn(255)), uint8(rand.Intn(255)), 1})
+			colors = append(colors, color.RGBA{uint8(rand.Intn(255)), uint8(rand.Intn(255)), uint8(rand.Intn(255)), 100})
 			initialLabel = (g.ItemsMap)[i].Label
 		}
 	}
@@ -48,11 +48,13 @@ func (g *Game) GenerateColors() {
 
 func (g *Game) Draw(screen *ebiten.Image) {
 	//purpleCol := color.RGBA{193, 62, 130, 0.8 * 100} // Item
-	greyColor := color.RGBA{128, 128, 128, 1} // background
-	antColor := color.RGBA{0, 0, 0, 1}        // Ant
+	whiteColor := color.RGBA{255, 255, 255, 3} // background
+	// antColor := color.RGBA{0, 0, 0, 1}        // Ant
 
 	for i := 0; i < utils.MATRIZ_SIZE; i++ {
 		for j := 0; j < utils.MATRIZ_SIZE; j++ {
+			// if (*g.AntMap)[i][j] == 1 {
+			// 	screen.Set(i, j, antColor)
 			if (*g.Enviroment)[i][j] > 0 {
 				// get item from the list
 				item := (*g.Enviroment)[i][j] - 1
@@ -61,10 +63,8 @@ func (g *Game) Draw(screen *ebiten.Image) {
 				// get color that have the same label
 				color := g.Colors[label]
 				screen.Set(i, j, color)
-			} else if (*g.AntMap)[i][j] == 1 {
-				screen.Set(i, j, antColor)
 			} else {
-				screen.Set(i, j, greyColor)
+				screen.Set(i, j, whiteColor)
 			}
 		}
 	}

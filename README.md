@@ -6,13 +6,16 @@
 
 ### Executar
 
-Se a constante `DEBUG` estiver em `TRUE` o programa ira inicializar a engine de
+Se se o parametro `debug` for passado na inicilização, o programa ira inicializar a engine de
 jogos 2d chamada `ebiten` para exibir o comportamento da formiga ao longo do
 tempo de iteração estipulado no arquivo /utils/constraints.go
 
+Caso parametro `print` for recebido, ira apenas mostrar o resultado final das iterações.
+
 ```bash
 $ go mod tidy
-$ go run main.go
+$ go run main.go debug
+$ go run main.go print
 ```
 
 ### Verificar as race condition das formigas
@@ -50,3 +53,12 @@ $ go test -bench=.
 	NUMBER_ITERATIONS = 100000
 ```
 
+### Referencias
+
+```
+Julia Handl, Joshua D. Knowles, & Marco Dorigo (2003). Ant-based clustering: a comparative study of its relative performance with respect to k-means, average link and 1d-som.
+
+O. A. Mohamed Jafar, & R. Sivakumar (2010). Ant-based Clustering Algorithms: A Brief Survey. International Journal of Computer Theory and Engineering, 787-796.
+
+Zahra Sadeghi, Mohammad Teshnehlab, & Mir Mohsen Pedram (2008). K-Ants Clustering - A new Strategy Based on Ant Clustering.
+```

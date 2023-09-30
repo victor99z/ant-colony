@@ -23,16 +23,20 @@ func ReadData(fileName string) ([][]string, error) {
 	defer f.Close()
 
 	r := csv.NewReader(f)
+	// skip first line
 
 	r.Comma = ';'
 	r.Comment = '#'
 
-	// skip first line
 	if _, err := r.Read(); err != nil {
 		return [][]string{}, err
 	}
 
 	records, err := r.ReadAll()
+
+	for _, record := range records {
+		fmt.Println(record)
+	}
 
 	if err != nil {
 		return [][]string{}, err
